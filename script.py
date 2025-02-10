@@ -28,15 +28,11 @@ print("Init de Selenium pour firefox")
 # Crée les options pour Firefox
 print("Crée les options pour Firefox")
 options = Options()
-options.add_argument("--headless")  # Active le mode headless
-options.add_argument("--disable-gpu")  # Évite certains bugs graphiques
-options.add_argument("--window-size=1920x1080")  # Définit une taille par défaut
-options.add_argument("--no-sandbox")  # Utile si exécuté dans un conteneur (Docker, Linux)
-options.add_argument("--disable-dev-shm-usage")  # Évite les problèmes de mémoire partagée
+options.add_argument("--headless")  # Mode sans interface graphique pour Render
 
 # Chemin vers le geckodriver
 print("Chemin vers le geckodriver")
-geckodriver_path = "geckodriver"
+geckodriver_path = "/usr/local/bin/geckodriver"
 service = Service(geckodriver_path)
 
 #Variables globales pour les tarifs et les matchs
