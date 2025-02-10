@@ -3,7 +3,7 @@ wget https://github.com/mozilla/geckodriver/releases/download/v0.35.0/geckodrive
 tar -xvzf geckodriver-v0.35.0-linux64.tar.gz
 chmod +x geckodriver
 apt-get remove --purge firefox -y
-apt install firefox=123.0
+apt install firefox
 PATH=$PATH:$(pwd)
 python3 -m venv .venv
 source .venv/bin/activate
