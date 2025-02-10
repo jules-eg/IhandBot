@@ -5,8 +5,9 @@ chmod +x geckodriver
 sudo apt-get remove --purge firefox
 sudo apt-get install firefox
 sudo apt install firefox=123.0
-PATH=$PATH:$(pwd)/geckodriver
+PATH=$PATH:$(pwd)
 echo $PATH
+which geckodriver
 ls -al
 geckodriver --version
 pip install -r requirements.txt
