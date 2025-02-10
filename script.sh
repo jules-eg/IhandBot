@@ -8,4 +8,5 @@ sudo apt install firefox=123.0
 PATH=$PATH:$(pwd)/geckodriver
 echo $PATH
 ls -al
+geckodriver --version
 pip install -r requirements.txt
