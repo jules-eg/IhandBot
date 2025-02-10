@@ -1,38 +1,50 @@
 # *DEPENDENCES : 
 #Selenium
-from numpy import mat
+print("Selenium")
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 # Telegram
+print("Telegram")
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 # Others
+print("Others")
 import time
 from dotenv import load_dotenv
 import os
 
 # *Récuperation des elements de .env
+print("Récupération des éléments de .env")
 load_dotenv()
 usr = os.getenv("user")
 mdp = os.getenv("mdp")
 token = os.getenv("TOKEN")
 
 # *Init de Selenium pour firefox
+print("Init de Selenium pour firefox")
 # Crée les options pour Firefox
+print("Crée les options pour Firefox")
 options = Options()
-options.headless = True  # Si tu veux que le navigateur soit visible, sinon True pour mode sans tête
+options.add_argument("--headless")  # Active le mode headless
+options.add_argument("--disable-gpu")  # Évite certains bugs graphiques
+options.add_argument("--window-size=1920x1080")  # Définit une taille par défaut
+options.add_argument("--no-sandbox")  # Utile si exécuté dans un conteneur (Docker, Linux)
+options.add_argument("--disable-dev-shm-usage")  # Évite les problèmes de mémoire partagée
 
 # Chemin vers le geckodriver
+print("Chemin vers le geckodriver")
 geckodriver_path = "geckodriver"
 service = Service(geckodriver_path)
 
 #Variables globales pour les tarifs et les matchs
+print("Variables globales pour les tarifs et les matchs")
 tarifs_arbitrage = {"N2F_CNA_FFHB": 80.00, "N3M_CNA_FFHB": 80.00, "N3F_PCO": 60.00, "PNM": 60.00, "PNF": 50.00, "EXC_M": 50.00, "EXC_F": 45.00, "HON_M": 45.00, "HON_F": 40.00, "D1T": 35.00, "D2T": 30.00, "D3T_M": 25.00, "D4T_M": 25.00, "D5T_M": 25.00, "D2FPL": 30.00, "U20FPL": 30.00, "U19MPL": 35.00, "U19M-44": 30.00, "U18M_CDF": 50.00, "U17F_CDF": 50.00, "U17MPL": 30.00, "U16MPL": 30.00, "U15MPL": 30.00, "JAJ_CTA_CLUB": 20.00, "CHAMP_JEUNES_TERR": 15.00}
 matches = []
 #* Fonctions de recherche dans Ihand
+print("Fonctions de recherche dans Ihand")
 def extract_match_info(match_element):
     match_info = {}
     # Fonction arbitre
@@ -77,6 +89,7 @@ def extract_match_info(match_element):
     return match_info
 
 # Fonction pour récupérer tous les matchs et créer un dictionnaire
+print("Fonction pour récupérer tous les matchs et créer un dictionnaire")   
 def extract_all_matches(driver):
     all_matches = []
     match_elements = driver.find_elements(By.CLASS_NAME, "package_arb")
@@ -87,23 +100,31 @@ def extract_all_matches(driver):
     return all_matches
 
 # Fonction pour récupérer le tarif en fonction de la catégorie
+print("Fonction pour récupérer le tarif en fonction de la catégorie")
 def get_tarif(categorie, tarifs):
     # Remplace les séparateurs par des espaces et découpe la chaîne en éléments
+    print("Remplace les séparateurs par des espaces et découpe la chaîne en éléments")
     elements = set(categorie.replace(";", " ").split())  
     for key in tarifs.keys():
         # Vérification si chaque clé du dictionnaire contient les éléments de la chaîne
+        print("Vérification si chaque clé du dictionnaire contient les éléments de la chaîne")
         if all(part in key for part in elements) and any(part == key for part in elements):
             return tarifs[key]
+    print("Aucun tarif trouvé")
     return None  # Aucun tarif trouvé
 
 
 # Fonction update de Ihand pour récupérer les infos
+print("Fonction update de Ihand pour récupérer les infos")
 def update_ihand():
     # Démarre Firefox sans profil spécifique
+    print("Démarre Firefox sans profil spécifique")
     driver = webdriver.Firefox(options=options, service=service)
     #Connection au site
+    print("Connection au site")
     driver.get('https://ihand-arbitrage.ffhandball.org/')
     # Remplir le formulaire de connexion
+    print("Remplir le formulaire de connexion")
     username = driver.find_element(By.ID, "entered_login")
     password = driver.find_element(By.ID, "entered_password")
     username.send_keys(usr)
@@ -113,10 +134,13 @@ def update_ihand():
     driver.quit()
     return matches
 #* BOT TELEGRAM
+print("BOT TELEGRAM")
 # Variables globales pour le bot
+print("Variables globales pour le bot")
 user_selection = {}
 
 # Commande de démarrage
+print("Commande de démarrage")
 async def start(update, context):
     await update.message.reply_text("""
                                     👋 Bienvenue ! Tapez /match pour voir la liste des matchs. 🏐
@@ -124,8 +148,10 @@ async def start(update, context):
                                     """)
 
 # Commande pour afficher la liste des matchs
+print("Commande pour afficher la liste des matchs")
 async def match(update, context):
     #si pas de match, retourner pas de match pour le moment
+    print("si pas de match, retourner pas de match pour le moment")
     if not matches:
         await update.message.reply_text("Pas de match pour le moment 🫤")
     else:
@@ -134,6 +160,7 @@ async def match(update, context):
         await update.message.reply_text("Sélectionne un match : 📅", reply_markup=reply_markup)
 
 # Commande pour gérer le choix d'un match
+print("Commande pour gérer le choix d'un match")
 async def handle_match_choice(update, context):
     query = update.callback_query
     match_index = int(query.data.split('_')[1])
@@ -151,6 +178,7 @@ async def handle_match_choice(update, context):
     await query.edit_message_text(f"Vous avez sélectionné le match : {match['date_heure']}\nQue voulez-vous faire ?", reply_markup=reply_markup)
 
 # Commande pour afficher les détails d'un match
+print("Commande pour afficher les détails d'un match")
 async def handle_details(update, context):
     query = update.callback_query
     user_id = query.from_user.id
@@ -174,6 +202,7 @@ async def handle_details(update, context):
         await query.edit_message_text("Aucun match sélectionné.")
 
 # Commande pour afficher la convocation d'un match
+print("Commande pour afficher la convocation d'un match")
 async def handle_convocation(update, context):
     query = update.callback_query
     user_id = query.from_user.id
@@ -191,6 +220,7 @@ async def handle_convocation(update, context):
         await query.edit_message_text("Aucun match sélectionné.")
 
 # Commande pour afficher la fiche de frais d'un match
+print("Commande pour afficher la fiche de frais d'un match")
 async def handle_frais(update, context):
     query = update.callback_query
     user_id = query.from_user.id
@@ -211,6 +241,7 @@ async def handle_frais(update, context):
         await query.edit_message_text("Aucun match sélectionné.")
 
 # Commande pour afficher la liste des matchs
+print("Commande pour afficher la liste des matchs")
 async def handle_show_matches(update, context):
     keyboard = [[InlineKeyboardButton(f"🗓 {m['date_heure']}", callback_data=f"match_{idx}")] for idx, m in enumerate(matches)]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -218,6 +249,7 @@ async def handle_show_matches(update, context):
     await update.callback_query.edit_message_text("Sélectionne un match : 📅", reply_markup=reply_markup)
 
 # Commande pour revenir en arrière
+print("Commande pour revenir en arrière")
 async def handle_back(update, context):
     query = update.callback_query
     user_id = query.from_user.id
@@ -237,12 +269,14 @@ async def handle_back(update, context):
         await query.edit_message_text("Aucun match sélectionné.")
 
 # Execution de update de Ihand a partir d'un input telegram
+print("Execution de update de Ihand a partir d'un input telegram")
 async def update_ihand_telegram(update, context):
     global matches
     matches = update_ihand()
     await update.message.reply_text("✅ Mise à jour des matchs effectuée.")
 
 # Lancement de l'application
+print("Lancement de l'application")
 def main():
     update_ihand()
     app = Application.builder().token(token).build()
