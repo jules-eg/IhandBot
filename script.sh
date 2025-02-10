@@ -2,12 +2,9 @@
 wget https://github.com/mozilla/geckodriver/releases/download/v0.35.0/geckodriver-v0.35.0-linux64.tar.gz
 tar -xvzf geckodriver-v0.35.0-linux64.tar.gz
 chmod +x geckodriver
-apt-get remove --purge firefox
-apt-get install firefox
+apt-get remove --purge firefox -y
 apt install firefox=123.0
 PATH=$PATH:$(pwd)
-echo $PATH
-which geckodriver
-ls -al
-geckodriver --version
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
