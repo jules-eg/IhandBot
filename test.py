@@ -60,11 +60,19 @@ def extract_match_info(match_element):
     arbitre_info = match_element.find_element(By.CLASS_NAME, "moi").text
     match_info['arbitre'] = arbitre_info.split(" ")[0] + " " + arbitre_info.split(" ")[1]
 
-    # Lien vers la fiche de frais et la convocation
+    # Lien vers la fiche de frais et la convocation, l'adresse et création feuille de frais
     liens = match_element.find_elements(By.TAG_NAME, "a")
-    match_info['fiche_de_frais'] = liens[0].get_attribute("href") if len(liens) > 0 else None
-    match_info['convocation'] = liens[1].get_attribute("href") if len(liens) > 1 else None
-
+    #verifie que lien[3] est different de none
+    if len(liens) > 3:
+        match_info['fiche_de_frais'] = liens[0].get_attribute("href") if len(liens) > 0 else None
+        match_info['convocation'] = liens[1].get_attribute("href") if len(liens) > 1 else None
+        match_info['adresse'] = liens[2].get_attribute("href") if len(liens) > 2 else None
+        match_info['crea_frais'] = liens[3].get_attribute("href") if len(liens) > 3 else None
+    else:
+        match_info['convocation'] = liens[1].get_attribute("href") if len(liens) > 0 else None
+        match_info['adresse'] = liens[1].get_attribute("href") if len(liens) > 1 else None
+        match_info['crea_frais'] = liens[2].get_attribute("href") if len(liens) > 2 else None
+        match_info['fiche_de_frais'] = None
     return match_info
 
 # Fonction pour récupérer tous les matchs et créer un dictionnaire
@@ -97,6 +105,7 @@ def update_ihand():
     password.send_keys(mdp + Keys.ENTER)
     driver.get('https://ihand-arbitrage.ffhandball.org/index.php?file=compte')
     return extract_all_matches(driver)
+    
 matches = update_ihand()
 # Afficher les résultats pour voir ce que ça donne
 
