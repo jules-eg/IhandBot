@@ -32,7 +32,7 @@ options.add_argument("--headless")  # Mode sans interface graphique pour Render
 
 # Chemin vers le geckodriver
 print("Chemin vers le geckodriver")
-geckodriver_path = "/usr/local/bin/geckodriver"
+geckodriver_path = "geckodriver"
 service = Service(geckodriver_path)
 
 #Variables globales pour les tarifs et les matchs
