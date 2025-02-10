@@ -1,6 +1,6 @@
 anyio==4.8.0
 appdirs==1.4.4
-asn1crypto==1.4.0
+    asn1crypto==1.4.0
 async-timeout==4.0.1
 attrs==23.1.0
 Babel==2.8.0
@@ -8,7 +8,6 @@ bcrypt==3.2.0
 beautifulsoup4==4.10.0
 beniget==0.4.1
 blinker==1.4
-Brlapi==0.8.3
 cairocffi==1.2.0
 CairoSVG==2.5.2
 certifi==2023.7.22
