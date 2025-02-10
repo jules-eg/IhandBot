@@ -3,3 +3,5 @@
 __pycache__
 .vscode
 profile
+geckodriver
+geckodriver-v0.35.0-linux64.tar.gz
